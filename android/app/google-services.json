@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "560970416681",
+    "project_id": "project-dcbdb",
+    "storage_bucket": "project-dcbdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560970416681:android:bfd54e55af971ae27a1238",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyMjOPMcdvwB0YP9kGhe0vA0jZNb2JDzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
