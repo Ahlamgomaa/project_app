@@ -13,7 +13,8 @@ class CustomImage extends StatelessWidget {
           backgroundColor: Colors.white,
           child: CircleAvatar(
             radius: 70,
-            backgroundImage: AssetImage('images/Ahlam.jpg'),
+            backgroundImage:
+                AssetImage('images/blue-login-icon-vector-3876635.jpg'),
           ),
         ),
       ),

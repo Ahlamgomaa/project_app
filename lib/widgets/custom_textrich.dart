@@ -13,11 +13,11 @@ class CustomTextrich extends StatelessWidget {
         child: RichText(
           text: TextSpan(
             text: richText,
-            style: TextStyle(color: Colors.black),
+            style:const TextStyle(color: Colors.black),
             children: [
               TextSpan(
                 text: spanText,
-                style: TextStyle(
+                style:const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
                 ),

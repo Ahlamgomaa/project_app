@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,7 +14,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text('Firebase'),
+        title: const Text('Project'),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil("login", (route) => false);
+              },
+              icon: Icon(Icons.exit_to_app))
+        ],
       ),
     );
   }
