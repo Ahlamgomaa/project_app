@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:project/auth/register_page.dart';
-
+import 'package:project/auth/login_page.dart';
 import 'package:project/widgets/custom_button.dart';
 import 'package:project/widgets/custom_image.dart';
 import 'package:project/widgets/custom_text.dart';
 import 'package:project/widgets/custom_text_form_field.dart';
 import 'package:project/widgets/custom_textrich.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController confirmpassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 30,
                 ),
                 const Text(
-                  'Login',
+                  'Register',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -42,11 +43,22 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 const Text(
-                  'login to continue using the App',
+                  'Enter your Personal Informatio',
                   style: TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(
                   height: 30,
+                ),
+                const CustomText(text: 'Username'),
+                const SizedBox(
+                  height: 5,
+                ),
+                CustomTextFormField(
+                  hinttext: 'Enter your username ',
+                  controller: username,
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 const CustomText(text: 'Email'),
                 const SizedBox(
@@ -67,60 +79,43 @@ class _LoginPageState extends State<LoginPage> {
                   hinttext: 'Enter your password',
                   controller: password,
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 20),
-                  alignment: Alignment.topRight,
-                  child: const Text(
-                    textAlign: TextAlign.right,
-                    'Forget Password?',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const CustomText(text: 'Confirm Password'),
+                const SizedBox(
+                  height: 5,
+                ),
+                CustomTextFormField(
+                  hinttext: 'confirm password',
+                  controller: confirmpassword,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomButton(
+                  text: 'Register      ',
+                  image: 'images/th (1).jpeg',
+                  onPressed: () {},
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                CustomTextrich(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginPage();
+                        },
+                      ),
+                    );
+                  },
+                  richText: ' have an account ?',
+                  spanText: 'Login',
                 ),
               ],
-            ),
-            CustomButton(
-              text: 'Login    ',
-              image: 'images/th (1).jpeg',
-              onPressed: () {},
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text(
-              'OR Login with',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            CustomButton(
-              text: 'Login With Google     ',
-              image: 'images/google-icon-1.png',
-              onPressed: () {},
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            CustomTextrich(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const RegisterPage();
-                    },
-                  ),
-                );
-              },
-              richText: " Don't have an account? ",
-              spanText: 'Register',
-            ),
+            )
           ],
         ),
       ),

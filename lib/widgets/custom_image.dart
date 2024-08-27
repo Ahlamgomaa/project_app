@@ -6,7 +6,7 @@ class CustomImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.only(top: 50),
+      padding: EdgeInsets.only(top: 20),
       child: Center(
         child: CircleAvatar(
           radius: 60,
