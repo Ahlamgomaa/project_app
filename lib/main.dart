@@ -43,10 +43,12 @@ class _ProjectState extends State<Project> {
       ),
       routes: {
         'login': (context) => const LoginPage(),
+        'home': (context) => const HomePage(),
       },
-      home: FirebaseAuth.instance.currentUser == null
-          ? const LoginPage()
-          : const HomePage(),
+      home: (FirebaseAuth.instance.currentUser! == null &&
+              FirebaseAuth.instance.currentUser!.emailVerified)
+          ? const HomePage()
+          : const LoginPage(),
     );
   }
 }

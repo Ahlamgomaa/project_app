@@ -129,13 +129,12 @@ class _LoginPageState extends State<LoginPage> {
                             email: email.text, password: password.text);
 
                     // If successful, navigate to the HomePage
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const HomePage();
-                        },
-                      ),
-                    );
+                    if (credential.user!.emailVerified) {
+                      Navigator.of(context).pushReplacementNamed('home');
+                    } else {
+                      _showAlertDialog(context, 'Not Verified',
+                          'Please Verifiaction your email');
+                    }
                   } on FirebaseAuthException catch (e) {
                     Navigator.of(context).pop(); // Close the loading dialog
 

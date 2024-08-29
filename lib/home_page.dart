@@ -28,17 +28,8 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: ListView(
-        children: [
-          FirebaseAuth.instance.currentUser!.emailVerified
-              ? const Text('Welcome')
-              : MaterialButton(
-                  textColor: Colors.white,
-                  color: Colors.blue,
-                  onPressed: () {},
-                  child: const Text(
-                    ('Please Verified Email'),
-                  ),
-                ),
+        children: const [
+          Text('Welcome'),
         ],
       ),
     );

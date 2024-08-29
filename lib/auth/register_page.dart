@@ -144,11 +144,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             email: email.text,
                             password: password.text,
                           );
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
+                          FirebaseAuth.instance.currentUser!
+                              .sendEmailVerification();
+                          Navigator.of(context).pushReplacementNamed('login');
                         } on FirebaseAuthException catch (e) {
                           Navigator.of(context)
                               .pop(); // Close the loading dialog
