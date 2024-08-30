@@ -2,24 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/auth/login_page.dart';
-
+import 'package:project/categories/add.dart';
 
 import 'package:project/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const Project());
+  runApp(const Notes());
 }
 
-class Project extends StatefulWidget {
-  const Project({super.key});
+class Notes extends StatefulWidget {
+  const Notes({super.key});
 
   @override
-  State<Project> createState() => _ProjectState();
+  State<Notes> createState() => _NotesState();
 }
 
-class _ProjectState extends State<Project> {
+class _NotesState extends State<Notes> {
   @override
   void initState() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -38,10 +38,20 @@ class _ProjectState extends State<Project> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Oswald',
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue[100],
+          elevation: 3,
+          titleTextStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
       ),
       routes: {
         'login': (context) => const LoginPage(),
         'home': (context) => const HomePage(),
+        'AddCategory': (context) => const AddCategory(),
       },
       home: (FirebaseAuth.instance.currentUser != null &&
               FirebaseAuth.instance.currentUser!.emailVerified)

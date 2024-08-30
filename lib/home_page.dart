@@ -13,9 +13,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[100],
-        elevation: 3,
+        onPressed: () {
+          Navigator.of(context).pushNamed('AddCategory');
+        },
+        child: const Icon(Icons.add),
+      ),
+      appBar: AppBar(
         title: const Text('Project'),
         actions: [
           IconButton(
@@ -31,9 +36,29 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: ListView(
-        children: const [
-          Text('Welcome'),
+      body: GridView(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisExtent: 200,
+        ),
+        children: [
+          Card(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'images/note.jpeg',
+                    height: 130,
+                  ),
+                  const Text(
+                    'Company',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

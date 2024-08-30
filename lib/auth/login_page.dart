@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       // Navigate to the Home Page
-      Navigator.of(context).pushNamed('home');
+      Navigator.of(context).pushNamedAndRemoveUntil('home', (route) => false);
     } on FirebaseAuthException catch (e) {
       // Handle errors from Firebase
       String errorMessage = '';
@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: password,
                     obscureText: true,
                     validator: (val) {
-                      if (val == '') {
+                      if (val == "") {
                         return 'field is required';
                       }
                     },
@@ -134,8 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                   InkWell(
                     onTap: () async {
                       if (email.text == "") {
-                        return _showAlertDialog(
-                            context, '', 'Email is required');
+                        _showAlertDialog(context, '', 'Email is required');
+                        return;
                       }
                       try {
                         await FirebaseAuth.instance
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                         textAlign: TextAlign.right,
                         'Forgot Password ?',
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: Color.fromARGB(255, 96, 96, 96),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

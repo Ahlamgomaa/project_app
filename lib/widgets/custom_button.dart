@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key, required this.text,required this.image, this.onPressed});
+  const CustomButton(
+      {super.key,
+      required this.text,
+      required this.image,
+      this.onPressed,
+      this.textColor});
   final String text;
+  final Color? textColor;
   final String image;
   final void Function()? onPressed;
 
@@ -15,18 +21,16 @@ class CustomButton extends StatelessWidget {
       ),
       color: Colors.blue,
       textColor: Colors.white,
-      onPressed:onPressed,
+      onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(text),
-         
-            Image.asset(
-              image,
-              width: 30,
-            ),
-          ],
-        
+          Image.asset(
+            image,
+            width: 30,
+          ),
+        ],
       ),
     );
   }
