@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/auth/register_page.dart';
-import 'package:project/home_page.dart';
+
 import 'package:project/widgets/custom_button.dart';
 import 'package:project/widgets/custom_image.dart';
 import 'package:project/widgets/custom_text.dart';
@@ -19,6 +20,53 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   GlobalKey<FormState> key = GlobalKey();
+  Future<void> signInWithGoogle() async {
+    try {
+      // Trigger the Google Sign-In process
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // If the user cancels the sign-in, googleUser will be null
+      if (googleUser == null) {
+        _showAlertDialog(context, 'Error', 'Sign in process was canceled.');
+        return;
+      }
+
+      // Obtain the auth details from the Google request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a credential for Firebase using the token and idToken
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in with the credential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Navigate to the Home Page
+      Navigator.of(context).pushNamed('home');
+    } on FirebaseAuthException catch (e) {
+      // Handle errors from Firebase
+      String errorMessage = '';
+      switch (e.code) {
+        case 'account-exists-with-different-credential':
+          errorMessage =
+              'An account already exists with the same email but different sign-in credentials.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'The credential is invalid or has expired.';
+          break;
+        default:
+          errorMessage = 'An unknown error occurred. Please try again.';
+      }
+      _showAlertDialog(context, 'Error', errorMessage);
+    } catch (e) {
+      // Handle other types of errors
+      _showAlertDialog(
+          context, 'Error', 'Failed to sign in with Google: ${e.toString()}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +131,32 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, bottom: 20),
-                    alignment: Alignment.topRight,
-                    child: const Text(
-                      textAlign: TextAlign.right,
-                      'Forgot Password?',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () async {
+                      if (email.text == "") {
+                        return _showAlertDialog(
+                            context, '', 'Email is required');
+                      }
+                      try {
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: email.text);
+                        _showAlertDialog(context, 'Reset password',
+                            'The link has been sent to your email');
+                      } catch (e) {
+                        _showAlertDialog(
+                            context, 'not valid email', ' User Not Found');
+                      }
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10, bottom: 20),
+                      alignment: Alignment.topRight,
+                      child: const Text(
+                        textAlign: TextAlign.right,
+                        'Forgot Password ?',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -179,7 +244,9 @@ class _LoginPageState extends State<LoginPage> {
             CustomButton(
               text: 'Login With Google',
               image: 'images/google-icon-1.png',
-              onPressed: () {},
+              onPressed: () {
+                signInWithGoogle();
+              },
             ),
             const SizedBox(
               height: 30,

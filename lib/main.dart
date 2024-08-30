@@ -3,14 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/auth/login_page.dart';
 
-import 'package:project/firebase_options.dart';
+
 import 'package:project/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   runApp(const Project());
 }
 
@@ -45,7 +43,7 @@ class _ProjectState extends State<Project> {
         'login': (context) => const LoginPage(),
         'home': (context) => const HomePage(),
       },
-      home: (FirebaseAuth.instance.currentUser! == null &&
+      home: (FirebaseAuth.instance.currentUser != null &&
               FirebaseAuth.instance.currentUser!.emailVerified)
           ? const HomePage()
           : const LoginPage(),
