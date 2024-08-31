@@ -42,23 +42,23 @@ class _HomePageState extends State<HomePage> {
           mainAxisExtent: 200,
         ),
         children: [
-          Card(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Image.asset(
-                    'images/note.jpeg',
-                    height: 130,
-                  ),
-                  const Text(
-                    'Company',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                ],
-              ),
-            ),
-          )
+          // Card(
+          //   child: Container(
+          //     padding: const EdgeInsets.all(10),
+          //     child: Column(
+          //       children: [
+          //         Image.asset(
+          //           'images/note.jpeg',
+          //           height: 130,
+          //         ),
+          //         const Text(
+          //           'Company',
+          //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

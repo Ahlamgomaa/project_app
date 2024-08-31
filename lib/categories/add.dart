@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:project/widgets/custom_button.dart';
+
 import 'package:project/widgets/custom_text_form_field.dart';
 
 class AddCategory extends StatefulWidget {
@@ -12,6 +13,16 @@ class AddCategory extends StatefulWidget {
 class _AddCategoryState extends State<AddCategory> {
   GlobalKey<FormState> key = GlobalKey();
   TextEditingController name = TextEditingController();
+  CollectionReference categories =
+      FirebaseFirestore.instance.collection('categories');
+  AddCategory() async {
+    try {
+      DocumentReference response = await categories.add({'name': name.text});
+      Navigator.of(context).pushReplacementNamed('home');
+    } catch (e) {
+      print('Error $e ');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +55,9 @@ class _AddCategoryState extends State<AddCategory> {
               ),
               color: Colors.blue,
               textColor: Colors.white,
-              onPressed: () {},
+              onPressed: () {
+                addCategory();
+              },
               child: const Text('Add'),
             ),
           ],
