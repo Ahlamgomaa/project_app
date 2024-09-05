@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,6 +11,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<QueryDocumentSnapshot> data = [];
+  getData() async {
+    QuerySnapshot guerySnapshot =
+        await FirebaseFirestore.instance.collection('categories').get();
+    data.addAll(guerySnapshot.docs);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,37 +44,41 @@ class _HomePageState extends State<HomePage> {
               googleSignIn.disconnect();
 
               await FirebaseAuth.instance.signOut();
-              Navigator.of(context)
+              Navigator.of( context)
                   .pushNamedAndRemoveUntil("login", (route) => false);
             },
             icon: const Icon(Icons.exit_to_app),
           ),
         ],
       ),
-      body: GridView(
+      body: GridView.builder(
+        itemCount: data.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisExtent: 200,
         ),
-        children: [
-          // Card(
-          //   child: Container(
-          //     padding: const EdgeInsets.all(10),
-          //     child: Column(
-          //       children: [
-          //         Image.asset(
-          //           'images/note.jpeg',
-          //           height: 130,
-          //         ),
-          //         const Text(
-          //           'Company',
-          //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-        ],
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'images/note.jpeg',
+                    height: 130,
+                  ),
+                  Text(
+                    '${data[index]['name']}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -37,7 +37,9 @@ class _AddCategoryState extends State<AddCategory> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(
+                20,
+              ),
               child: CustomTextFormField(
                 hinttext: 'Enter Nmae',
                 controller: name,
@@ -56,7 +58,7 @@ class _AddCategoryState extends State<AddCategory> {
               color: Colors.blue,
               textColor: Colors.white,
               onPressed: () {
-                addCategory();
+                AddCategory();
               },
               child: const Text('Add'),
             ),
