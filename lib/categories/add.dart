@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:project/widgets/custom_text_form_field.dart';
@@ -15,11 +17,26 @@ class _AddCategoryState extends State<AddCategory> {
   TextEditingController name = TextEditingController();
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
+  bool isLoading = false;
   AddCategory() async {
     try {
-      DocumentReference response = await categories.add({'name': name.text});
-      Navigator.of(context).pushReplacementNamed('home');
+      isLoading = true;
+      setState(() {});
+      DocumentReference response = await categories.add(
+        {
+          'name': name.text,
+          "id": FirebaseAuth.instance.currentUser!.uid,
+        },
+      );
+      isLoading = false;
+      // setState(() {});
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        'home',
+        (route) => false,
+      );
     } catch (e) {
+      isLoading = false;
+      setState(() {});
       print('Error $e ');
     }
   }
@@ -34,36 +51,40 @@ class _AddCategoryState extends State<AddCategory> {
       ),
       body: Form(
         key: key,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(
-                20,
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(
+                      20,
+                    ),
+                    child: CustomTextFormField(
+                      hinttext: 'Enter Nmae',
+                      controller: name,
+                      validator: (val) {
+                        if (val == '') {
+                          return 'field is required ';
+                        }
+                      },
+                    ),
+                  ),
+                  MaterialButton(
+                    height: 45,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      AddCategory();
+                    },
+                    child: const Text('Add'),
+                  ),
+                ],
               ),
-              child: CustomTextFormField(
-                hinttext: 'Enter Nmae',
-                controller: name,
-                validator: (val) {
-                  if (val == '') {
-                    return 'field is required ';
-                  }
-                },
-              ),
-            ),
-            MaterialButton(
-              height: 45,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              color: Colors.blue,
-              textColor: Colors.white,
-              onPressed: () {
-                AddCategory();
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        ),
       ),
     );
   }

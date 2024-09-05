@@ -14,8 +14,13 @@ class _HomePageState extends State<HomePage> {
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = true;
   getData() async {
-    QuerySnapshot guerySnapshot =
-        await FirebaseFirestore.instance.collection('categories').get();
+    QuerySnapshot guerySnapshot = await FirebaseFirestore.instance
+        .collection('categories')
+        .where(
+          'id',
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
     //await Future.delayed(
     //   Duration(seconds: 1),
     // );
@@ -66,24 +71,70 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2,
                 mainAxisExtent: 200,
               ),
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'images/note.jpeg',
-                          height: 130,
-                        ),
-                        Text(
-                          '${data[index]['name']}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
+              itemBuilder: (
+                BuildContext context,
+                int index,
+              ) {
+                return GestureDetector(
+                  onLongPress: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text(
+                            'Delete !',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                          content: const Text(
+                            'Are you sure you want to delete ?',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () async {
+                                await FirebaseFirestore.instance
+                                    .collection('categories')
+                                    .doc(data[index].id)
+                                    .delete();
+                                Navigator.of(context)
+                                    .pushReplacementNamed('home');
+                              },
+                              child: const Text('Ok'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushReplacementNamed('home');
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Card(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'images/note.jpeg',
+                            height: 130,
+                          ),
+                          Text(
+                            '${data[index]['name']}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

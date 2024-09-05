@@ -202,6 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                               .signInWithEmailAndPassword(
                                   email: email.text, password: password.text);
                           isLoading = false;
+                          setState(() {});
 
                           // If successful, navigate to the HomePage
                           if (credential.user!.emailVerified) {
@@ -211,6 +212,8 @@ class _LoginPageState extends State<LoginPage> {
                                 'Please Verifiaction your email');
                           }
                         } on FirebaseAuthException catch (e) {
+                          isLoading = false;
+                          setState(() {});
                           Navigator.of(context)
                               .pop(); // Close the loading dialog
 
