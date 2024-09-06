@@ -3,26 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/categories/update.dart';
-import 'package:project/notes/view.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class NotesView extends StatefulWidget {
+  const NotesView({super.key, required this.categoryId});
+  final String categoryId;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<NotesView> createState() => _NotesViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NotesViewState extends State<NotesView> {
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = true;
   getData() async {
     QuerySnapshot guerySnapshot = await FirebaseFirestore.instance
         .collection('categories')
-        .where(
-          'id',
-          isEqualTo: FirebaseAuth.instance.currentUser!.uid,
-        )
+        .doc(widget.categoryId)
+        .collection('note')
         .get();
+
     //await Future.delayed(
     //   Duration(seconds: 1),
     // );
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text('HomePage'),
+        title: const Text('Note'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -78,17 +77,6 @@ class _HomePageState extends State<HomePage> {
                 int index,
               ) {
                 return GestureDetector(
-                  onDoubleTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return NotesView(
-                            categoryId: data[index].id,
-                          );
-                        },
-                      ),
-                    );
-                  },
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -151,18 +139,14 @@ class _HomePageState extends State<HomePage> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                'images/note.jpeg',
-                                height: 130,
+                              Text(
+                                '${data[index]['note']}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ),
                               ),
                             ],
-                          ),
-                          Text(
-                            '${data[index]['name']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17,
-                            ),
                           ),
                         ],
                       ),
