@@ -18,7 +18,7 @@ class _AddCategoryState extends State<AddCategory> {
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
   bool isLoading = false;
-  AddCategory() async {
+  addCategory() async {
     try {
       isLoading = true;
       setState(() {});
@@ -42,6 +42,12 @@ class _AddCategoryState extends State<AddCategory> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    name.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +68,7 @@ class _AddCategoryState extends State<AddCategory> {
                       20,
                     ),
                     child: CustomTextFormField(
-                      hinttext: 'Enter Nmae',
+                      hinttext: 'Enter Name',
                       controller: name,
                       validator: (val) {
                         if (val == '') {
@@ -79,7 +85,7 @@ class _AddCategoryState extends State<AddCategory> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     onPressed: () {
-                      AddCategory();
+                      addCategory();
                     },
                     child: const Text('Add'),
                   ),

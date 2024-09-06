@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -19,13 +20,17 @@ class _UpdateCategoryState extends State<UpdateCategory> {
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
   bool isLoading = false;
-  UpdateCategory() async {
+  // set = > update
+  // set = > add
+  updateCategory() async {
     try {
       isLoading = true;
       setState(() {});
-      await categories.doc(widget.docId).update({
-        "name": name.text,
-      });
+
+      await categories.doc(widget.docId).set(
+        {"name": name.text},
+        SetOptions(merge: true),
+      );
       isLoading = false;
       // setState(() {});
       Navigator.of(context).pushNamedAndRemoveUntil(
@@ -37,6 +42,12 @@ class _UpdateCategoryState extends State<UpdateCategory> {
       setState(() {});
       print('Error $e ');
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    name.dispose();
   }
 
   @override
@@ -83,7 +94,7 @@ class _UpdateCategoryState extends State<UpdateCategory> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     onPressed: () {
-                      UpdateCategory();
+                      updateCategory();
                     },
                     child: const Text('Edit'),
                   ),

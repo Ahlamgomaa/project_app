@@ -3,8 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project/auth/login_page.dart';
 import 'package:project/categories/add.dart';
-import 'package:project/categories/update.dart';
-
 import 'package:project/home_page.dart';
 
 void main() async {
@@ -53,7 +51,6 @@ class _NotesState extends State<Notes> {
         'login': (context) => const LoginPage(),
         'home': (context) => const HomePage(),
         'AddCategory': (context) => const AddCategory(),
-       
       },
       home: (FirebaseAuth.instance.currentUser != null &&
               FirebaseAuth.instance.currentUser!.emailVerified)

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/auth/register_page.dart';
-
 import 'package:project/widgets/custom_button.dart';
 import 'package:project/widgets/custom_image.dart';
 import 'package:project/widgets/custom_text.dart';
@@ -28,7 +27,11 @@ class _LoginPageState extends State<LoginPage> {
 
       // If the user cancels the sign-in, googleUser will be null
       if (googleUser == null) {
-        _showAlertDialog(context, 'Error', 'Sign in process was canceled.');
+        _showAlertDialog(
+          context,
+          'Error',
+          'Sign in process was canceled',
+        );
         return;
       }
 
@@ -46,7 +49,10 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       // Navigate to the Home Page
-      Navigator.of(context).pushNamedAndRemoveUntil('home', (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        'home',
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
       // Handle errors from Firebase
       String errorMessage = '';
@@ -65,7 +71,10 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       // Handle other types of errors
       _showAlertDialog(
-          context, 'Error', 'Failed to sign in with Google: ${e.toString()}');
+        context,
+        'Error',
+        'Failed to sign in with Google: ${e.toString()}',
+      );
     }
   }
 
@@ -101,12 +110,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const Text(
                           'Login to continue using the App',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
                         const SizedBox(
                           height: 30,
                         ),
-                        const CustomText(text: 'Email'),
+                        const CustomText(
+                          text: 'Email',
+                        ),
                         const SizedBox(
                           height: 5,
                         ),
@@ -122,7 +135,9 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const CustomText(text: 'Password'),
+                        const CustomText(
+                          text: 'Password',
+                        ),
                         const SizedBox(
                           height: 5,
                         ),
@@ -140,7 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: () async {
                             if (email.text == "") {
                               _showAlertDialog(
-                                  context, '', 'Email is required');
+                                context,
+                                '',
+                                'Email is required',
+                              );
                               return;
                             }
                             try {
@@ -236,7 +254,11 @@ class _LoginPageState extends State<LoginPage> {
                           }
 
                           // Show an AlertDialog with the appropriate error message
-                          _showAlertDialog(context, 'Error', errorMessage);
+                          _showAlertDialog(
+                            context,
+                            'Error',
+                            errorMessage,
+                          );
                         }
                       } else {
                         print('Not Valid');
