@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/categories/update.dart';
+import 'package:project/notes/add.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key, required this.categoryId});
@@ -42,7 +43,15 @@ class _NotesViewState extends State<NotesView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[100],
         onPressed: () {
-          Navigator.of(context).pushNamed('AddCategory');
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return AddNote(
+                  docId: widget.categoryId,
+                );
+              },
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -62,99 +71,106 @@ class _NotesViewState extends State<NotesView> {
           ),
         ],
       ),
-      body: isLoading == true
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : GridView.builder(
-              itemCount: data.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 200,
-              ),
-              itemBuilder: (
-                BuildContext context,
-                int index,
-              ) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return UpdateCategory(
-                            docId: data[index].id,
-                            oldName: data[index]["name"],
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text(
-                            'Delete !',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+      body: WillPopScope(
+        child: isLoading == true
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : GridView.builder(
+                itemCount: data.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 200,
+                ),
+                itemBuilder: (
+                  BuildContext context,
+                  int index,
+                ) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return UpdateCategory(
+                              docId: data[index].id,
+                              oldName: data[index]["name"],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    onLongPress: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text(
+                              'Delete !',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          content: const Text(
-                            'Are you sure you want to delete ?',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                            content: const Text(
+                              'Are you sure you want to delete ?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('categories')
-                                    .doc(data[index].id)
-                                    .delete();
-                                Navigator.of(context)
-                                    .pushReplacementNamed('home');
-                              },
-                              child: const Text('Ok'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed('home');
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Card(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${data[index]['note']}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  await FirebaseFirestore.instance
+                                      .collection('categories')
+                                      .doc(data[index].id)
+                                      .delete();
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('home');
+                                },
+                                child: const Text('Ok'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('AddNote');
+                                },
+                                child: const Text('Cancel'),
                               ),
                             ],
-                          ),
-                        ],
+                          );
+                        },
+                      );
+                    },
+                    child: Card(
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${data[index]['note']}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
+        onWillPop: () {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('home', (route) => false);
+          return Future.value(false);
+        },
+      ),
     );
   }
 }
