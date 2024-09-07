@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project/categories/update.dart';
 import 'package:project/notes/add.dart';
+import 'package:project/notes/edit.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key, required this.categoryId});
@@ -91,9 +92,10 @@ class _NotesViewState extends State<NotesView> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return UpdateCategory(
-                              docId: data[index].id,
-                              oldName: data[index]["name"],
+                            return EditNote(
+                              docnoteId: data[index].id,
+                              catergoryId: widget.categoryId,
+                              value:data[index]['note'] ,
                             );
                           },
                         ),
@@ -142,21 +144,15 @@ class _NotesViewState extends State<NotesView> {
                     },
                     child: Card(
                       child: Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(25),
                         child: Column(
                           children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${data[index]['note']}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              '${data[index]['note']}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                              ),
                             ),
                           ],
                         ),
