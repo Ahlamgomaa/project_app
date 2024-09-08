@@ -95,7 +95,7 @@ class _NotesViewState extends State<NotesView> {
                             return EditNote(
                               docnoteId: data[index].id,
                               catergoryId: widget.categoryId,
-                              value:data[index]['note'] ,
+                              value: data[index]['note'],
                             );
                           },
                         ),
@@ -123,17 +123,25 @@ class _NotesViewState extends State<NotesView> {
                                 onPressed: () async {
                                   await FirebaseFirestore.instance
                                       .collection('categories')
+                                      .doc(widget.categoryId)
+                                      .collection('note')
                                       .doc(data[index].id)
                                       .delete();
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('home');
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return NotesView(
+                                            categoryId: widget.categoryId);
+                                      },
+                                    ),
+                                  );
                                 },
                                 child: const Text('Ok'),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context)
-                                      .pushReplacementNamed('AddNote');
+                                      .pushReplacementNamed('home');
                                 },
                                 child: const Text('Cancel'),
                               ),
