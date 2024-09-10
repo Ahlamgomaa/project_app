@@ -162,6 +162,14 @@ class _NotesViewState extends State<NotesView> {
                                 fontSize: 17,
                               ),
                             ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            if (data[index]['url'] != 'none')
+                              Image.network(
+                                data[index]['url'],
+                                height: 80,
+                              )
                           ],
                         ),
                       ),
