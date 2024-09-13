@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:project/categories/update.dart';
 import 'package:project/notes/add.dart';
 import 'package:project/notes/edit.dart';
 
@@ -17,25 +17,26 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = true;
-  getData() async {
-    QuerySnapshot guerySnapshot = await FirebaseFirestore.instance
+
+  Future<void> getData() async {
+    setState(() => isLoading = true); // Show loading indicator
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('categories')
         .doc(widget.categoryId)
         .collection('note')
         .get();
 
-    //await Future.delayed(
-    //   Duration(seconds: 1),
-    // );
-    data.addAll(guerySnapshot.docs);
-    isLoading = false;
-    setState(() {});
+    setState(() {
+      data = querySnapshot.docs;
+      isLoading = false; // Hide loading indicator
+    });
   }
 
   @override
   void initState() {
-    getData();
     super.initState();
+    getData();
   }
 
   @override
@@ -47,9 +48,7 @@ class _NotesViewState extends State<NotesView> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
-                return AddNote(
-                  docId: widget.categoryId,
-                );
+                return AddNote(docId: widget.categoryId);
               },
             ),
           );
@@ -62,7 +61,7 @@ class _NotesViewState extends State<NotesView> {
           IconButton(
             onPressed: () async {
               GoogleSignIn googleSignIn = GoogleSignIn();
-              googleSignIn.disconnect();
+              await googleSignIn.disconnect();
 
               await FirebaseAuth.instance.signOut();
               Navigator.of(context)
@@ -73,20 +72,27 @@ class _NotesViewState extends State<NotesView> {
         ],
       ),
       body: WillPopScope(
-        child: isLoading == true
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+        onWillPop: () async {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('home', (route) => false);
+          return Future.value(false);
+        },
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
             : GridView.builder(
                 itemCount: data.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisExtent: 200,
                 ),
-                itemBuilder: (
-                  BuildContext context,
-                  int index,
-                ) {
+                itemBuilder: (BuildContext context, int index) {
+                  // Ensure the note data is casted properly
+                  Map<String, dynamic> noteData =
+                      data[index].data() as Map<String, dynamic>;
+
+                  String note = noteData['note'] ?? 'No content';
+                  String? url = noteData['url'] as String?;
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
@@ -95,7 +101,7 @@ class _NotesViewState extends State<NotesView> {
                             return EditNote(
                               docnoteId: data[index].id,
                               catergoryId: widget.categoryId,
-                              value: data[index]['note'],
+                              value: note,
                             );
                           },
                         ),
@@ -108,15 +114,11 @@ class _NotesViewState extends State<NotesView> {
                           return AlertDialog(
                             title: const Text(
                               'Delete !',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             content: const Text(
                               'Are you sure you want to delete ?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             actions: <Widget>[
                               TextButton(
@@ -127,21 +129,21 @@ class _NotesViewState extends State<NotesView> {
                                       .collection('note')
                                       .doc(data[index].id)
                                       .delete();
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return NotesView(
-                                            categoryId: widget.categoryId);
-                                      },
-                                    ),
-                                  );
+                                  if (url != null && url != 'none') {
+                                    await FirebaseStorage.instance
+                                        .refFromURL(url)
+                                        .delete();
+                                  }
+
+                                  // Refresh the list after deletion
+                                  getData();
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text('Ok'),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('home');
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text('Cancel'),
                               ),
@@ -154,22 +156,22 @@ class _NotesViewState extends State<NotesView> {
                       child: Container(
                         padding: const EdgeInsets.all(25),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              '${data[index]['note']}',
+                              note,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),
                             ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            if (data[index]['url'] != 'none')
+                            const SizedBox(height: 15),
+                            if (url != null && url != 'none')
                               Image.network(
-                                data[index]['url'],
+                                url,
                                 height: 80,
-                              )
+                                fit: BoxFit.cover,
+                              ),
                           ],
                         ),
                       ),
@@ -177,11 +179,6 @@ class _NotesViewState extends State<NotesView> {
                   );
                 },
               ),
-        onWillPop: () {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('home', (route) => false);
-          return Future.value(false);
-        },
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:project/auth/login_page.dart';
 import 'package:project/categories/add.dart';
 import 'package:project/home_page.dart';
 import 'package:project/notes/add.dart';
+import 'package:project/test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,12 +53,12 @@ class _NotesState extends State<Notes> {
         'login': (context) => const LoginPage(),
         'home': (context) => const HomePage(),
         'AddCategory': (context) => const AddCategory(),
-        
       },
-      home: (FirebaseAuth.instance.currentUser != null &&
-              FirebaseAuth.instance.currentUser!.emailVerified)
-          ? const HomePage()
-          : const LoginPage(),
+      // home: (FirebaseAuth.instance.currentUser != null &&
+      //         FirebaseAuth.instance.currentUser!.emailVerified)
+      //     ? const HomePage()
+      //     : const LoginPage(),
+      home: Test(),
     );
   }
 }

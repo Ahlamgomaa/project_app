@@ -106,6 +106,13 @@ class _AddNoteState extends State<AddNote> {
                       },
                     ),
                   ),
+                  CustomButtonUpload(
+                    text: "Upload Image ",
+                    isSelected: url == null ? false : true,
+                    onPressed: () async {
+                      await getImage();
+                    },
+                  ),
                   MaterialButton(
                     height: 45,
                     shape: RoundedRectangleBorder(
@@ -117,13 +124,6 @@ class _AddNoteState extends State<AddNote> {
                       addNote(context);
                     },
                     child: const Text('Add'),
-                  ),
-                  CustomButtonUpload(
-                    text: "Upload Image ",
-                    isSelected: url == null ? false : true,
-                    onPressed: () async {
-                      await getImage();
-                    },
                   ),
                 ],
               ),
